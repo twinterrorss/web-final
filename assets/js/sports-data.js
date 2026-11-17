@@ -1,6 +1,5 @@
 "use strict";
 
-// Demo data in the format expected by the existing sports.js.
 function createSportData(teams, abbreviations, score, league) {
   return {
     hero: teams.join(" vs "),
@@ -28,7 +27,6 @@ window.cyberWinSports = {
   }
 };
 
-// Keep the original featured fixtures from the two HTML pages.
 window.cyberWinSports.sports.Football.fixtures = [
   ["Arsenal", "Barys", "PRO LEAGUE", "Tomorrow · 18:00"],
   ["Real Madrid", "Barcelona", "GRAND FINAL", "Tomorrow · 20:30"],
