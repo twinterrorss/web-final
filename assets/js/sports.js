@@ -234,6 +234,7 @@
     var fixtureList = upcomingSection.find(".fixture-list").empty();
 
     clearApiCards();
+    window.dispatchEvent(new CustomEvent("matchesLoading"));
     liveSection.find(".section-title h2 b").text("LOADING");
     upcomingSection.find(".section-title h2 b").text("LOADING");
     showMatchApiState(liveSection, "Loading match data...", "info", false);
@@ -262,6 +263,9 @@
       nonLiveMatches.forEach(function (match) {
         fixtureList.append(renderApiUpcomingMatch(match));
       });
+      window.dispatchEvent(new CustomEvent("matchesLoaded", {
+        detail: { matches: matches, sport: sport }
+      }));
 
       liveSection.find(".section-title h2 b").text(liveMatches.length + " LIVE");
       upcomingSection.find(".section-title h2 b").text(nonLiveMatches.length + " MATCHES");
@@ -300,6 +304,7 @@
       if ((error && error.name === "AbortError") || requestVersion !== apiRequestVersion) return;
 
       clearApiCards();
+      window.dispatchEvent(new CustomEvent("matchesLoadFailed"));
       liveSection.find(".section-title h2 b").text("ERROR");
       upcomingSection.find(".section-title h2 b").text("ERROR");
 
