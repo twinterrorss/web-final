@@ -187,6 +187,69 @@
               </div>
             </div>
           </section>
+
+          <section class="match-section" id="match-explorer">
+            <div class="section-title">
+              <h2>MATCH EXPLORER</h2>
+              <small>Search and filter matches</small>
+            </div>
+
+            <div class="card bg-dark border-secondary p-3 mb-3">
+              <div class="row g-3">
+
+                <div class="col-12 col-md-6">
+                  <label for="match-search" class="form-label">
+                    Search by team
+                  </label>
+                  <input type="search" id="match-search" class="form-control" placeholder="Enter team name...">
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="match-status" class="form-label">
+                    Match status
+                  </label>
+                  <select id="match-status" class="form-select">
+                    <option value="all">All matches</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="live">Live</option>
+                    <option value="finished">Finished</option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="match-date" class="form-label">
+                    Match date
+                  </label>
+                  <input type="date" id="match-date" class="form-control">
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label for="match-sort" class="form-label">
+                    Sort by date
+                  </label>
+                  <select id="match-sort" class="form-select">
+                    <option value="asc">Earliest first</option>
+                    <option value="desc">Latest first</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <button type="button" id="match-reset" class="btn btn-outline-success">
+                    Reset filters
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <p id="match-filter-summary" role="status" aria-live="polite">
+              Match data is not loaded yet.
+            </p>
+
+            <div id="match-results" class="fixture-list">
+            </div>
+          </section>
+
           <section class="watchlist" id="watchlist" aria-labelledby="watchlist-title">
             <div class="section-title">
               <h2 id="watchlist-title">MATCH SCHEDULE</h2>
@@ -330,6 +393,7 @@
   <script src="assets/js/match-api.js"></script>
   <script src="assets/js/sports-data.js"></script>
   <script src="assets/js/sports.js"></script>
+  <script src="assets/js/match-filter.js"></script>
 </body>
 
 </html>
