@@ -40,37 +40,11 @@
     }
   }
 
-  function getStorageKey() {
-    return window.cyberWinSports && window.cyberWinSports.storageKey
-      ? window.cyberWinSports.storageKey
-      : "cyberWinSchedule";
-  }
-
   function formatDate(value) {
     var date = new Date(value);
     return Number.isNaN(date.getTime())
       ? String(value || "Date unavailable")
       : date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" });
-  }
-
-  function readSchedule() {
-    try {
-      var rows = JSON.parse(window.localStorage.getItem(getStorageKey()) || "[]");
-      return Array.isArray(rows) ? rows : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function renderScheduleRow(row) {
-    var tbody = $(".schedule-table tbody");
-    if (!tbody.length) return;
-
-    $("<tr>").append(
-      $("<th>", { scope: "row", text: row.match || "" }),
-      $("<td>", { text: row.sport || "" }),
-      $("<td>", { text: formatDate(row.time) })
-    ).appendTo(tbody);
   }
 
   function showMatchApiState(section, message, type, canRetry) {
@@ -150,6 +124,28 @@
     );
   }
 
+  function createSaveMatchButton(match, sport) {
+    return $("<button>", {
+      type: "button",
+      class: "btn btn-sm btn-outline-success save-match",
+      text: "Save match",
+      "aria-label": "Save " + match.homeTeam + " vs " + match.awayTeam
+    }).on("click", function () {
+      var result = window.matchStorage.add({
+        match: match.homeTeam + " vs " + match.awayTeam,
+        sport: sport,
+        time: match.date,
+        note: ""
+      });
+      if (result.error) {
+        showMessage(result.error, "danger");
+        return;
+      }
+      window.dispatchEvent(new Event("schedule-changed"));
+      window.location.href = "index.html#watchlist";
+    });
+  }
+
   function renderApiLiveMatch(match, sport) {
     var score = typeof match.getScoreLabel === "function"
       ? match.getScoreLabel()
@@ -167,11 +163,12 @@
       $("<span>", { class: "tiny-live", text: "LIVE" }),
       $("<span>", { class: "current-score", text: score || "IN PLAY" }),
       $("<small>", { class: "api-match-sport", text: sport }),
-      renderApiOdds(match)
+      renderApiOdds(match),
+      createSaveMatchButton(match, sport)
     );
   }
 
-  function renderApiUpcomingMatch(match) {
+  function renderApiUpcomingMatch(match, sport) {
     return $("<div>", {
       class: "fixture api-fixture",
       "data-match-id": match.id
@@ -181,7 +178,8 @@
       createTeamLabel(match.awayTeam),
       $("<em>", { text: String(match.status || "upcoming").toUpperCase() }),
       $("<small>", { text: formatDate(match.date) }),
-      renderApiOdds(match)
+      renderApiOdds(match),
+      createSaveMatchButton(match, sport)
     );
   }
 
@@ -260,7 +258,7 @@
         liveSection.append(renderApiLiveMatch(match, sport));
       });
       nonLiveMatches.forEach(function (match) {
-        fixtureList.append(renderApiUpcomingMatch(match));
+        fixtureList.append(renderApiUpcomingMatch(match, sport));
       });
 
       liveSection.find(".section-title h2 b").text(liveMatches.length + " LIVE");
@@ -383,8 +381,6 @@
     var initiallySelected = $(".sport-tabs .selected").first().text();
     selectedSport = initiallySelected.replace(/^[^A-Za-z0-9]+/, "").trim();
 
-    readSchedule().forEach(renderScheduleRow);
-
     $(".sport-tabs span").each(function () {
       $(this).attr({
         tabindex: "0",
@@ -449,33 +445,6 @@
       if ($(this).prop("disabled")) return;
       $(this).prop("disabled", true).text("BET PLACED");
       showMessage("Demo bet placed successfully.");
-    });
-
-    $(".schedule-form").on("submit", function (event) {
-      event.preventDefault();
-      var form = $(this);
-      var row = {
-        match: String(form.find("[name='match']").val() || "").trim(),
-        sport: String(form.find("[name='sport']").val() || "").trim(),
-        time: String(form.find("[name='time']").val() || "").trim()
-      };
-
-      if (!row.match || !row.sport || !row.time) {
-        showMessage("Please complete all schedule fields.", "danger");
-        return;
-      }
-
-      var rows = readSchedule();
-      rows.push(row);
-      try {
-        window.localStorage.setItem(getStorageKey(), JSON.stringify(rows));
-      } catch (error) {
-        showMessage("The browser could not save the schedule (storage may be disabled).", "danger");
-        return;
-      }
-      renderScheduleRow(row);
-      form[0].reset();
-      showMessage("Match added to your schedule.");
     });
   });
 })(jQuery, window, document);

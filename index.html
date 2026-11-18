@@ -10,6 +10,8 @@
   <link href="assets/css/sports-extra.css" rel="stylesheet">
   <link href="assets/css/shared.css" rel="stylesheet">
   <script src="assets/js/shared.js"></script>
+  <script src="assets/js/match-storage.js"></script>
+  <script src="assets/js/schedule.js"></script>
   <script src="assets/js/sports-data.js"></script>
 </head>
 
@@ -193,8 +195,7 @@
             <form action="index.html#watchlist" method="get" class="schedule-form" aria-labelledby="schedule-form-title"
               aria-describedby="schedule-note">
               <h3 id="schedule-form-title">Plan a match viewing</h3>
-              <p class="schedule-note" id="schedule-note">All fields are required. Submitting reloads this page; entries
-                are not saved or added to the schedule.</p>
+              <p class="schedule-note" id="schedule-note">Match, sport and date are required; notes are optional. Saved in this browser and restored after reload.</p>
               <div class="schedule-fields row g-3">
                 <div class="col-12 col-md-6 col-xl-4">
                   <label for="match-name" class="form-label">Match</label>
@@ -208,6 +209,13 @@
                     <option>Basketball</option>
                     <option>Hockey</option>
                     <option>Esports</option>
+                    <option>Horse racing</option>
+                    <option>CS2</option>
+                    <option>Dota 2</option>
+                    <option>League of Legends</option>
+                    <option>Valorant</option>
+                    <option>Apex Legends</option>
+                    <option>Overwatch 2</option>
                   </select>
                 </div>
                 <div class="col-12 col-md-6 col-xl-4">
@@ -215,44 +223,31 @@
                   <input id="match-time" name="time" type="datetime-local" required class="form-control">
                 </div>
               </div>
-              <div class="schedule-actions">
-                <button class="wide-green btn btn-success" type="submit">SUBMIT</button>
+              <div class="schedule-fields mt-3">
+                <label for="match-note" class="form-label">Note (optional)</label>
+                <textarea id="match-note" name="note" class="form-control" rows="3" maxlength="1000"
+                  placeholder="Your notes about this match"></textarea>
+              </div>
+              <div class="schedule-actions gap-2">
+                <button id="cancel-schedule" class="btn btn-outline-secondary" type="button" hidden>Cancel</button>
+                <button class="wide-green btn btn-success" type="submit">ADD MATCH</button>
               </div>
             </form>
+            <p id="schedule-message" class="schedule-message" role="status" aria-live="polite"></p>
             <div class="schedule-table-wrap table-responsive" role="region" aria-label="Match schedule table"
               tabindex="0">
               <table class="schedule-table table table-dark table-striped align-middle mb-0">
-                <caption>Sample match schedule · times are local</caption>
+                <caption>Your saved matches and notes · times are local</caption>
                 <thead>
                   <tr>
                     <th scope="col">Match</th>
                     <th scope="col">Sport</th>
                     <th scope="col">Date &amp; time</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">Arsenal vs Chelsea</th>
-                    <td>Football</td>
-                    <td>
-                      <time datetime="2026-10-10T18:00">10 Oct 2026, 18:00</time>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Lakers vs Celtics</th>
-                    <td>Basketball</td>
-                    <td>
-                      <time datetime="2026-10-11T20:30">11 Oct 2026, 20:30</time>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Barys vs Spartak</th>
-                    <td>Hockey</td>
-                    <td>
-                      <time datetime="2026-10-12T16:00">12 Oct 2026, 16:00</time>
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           </section>

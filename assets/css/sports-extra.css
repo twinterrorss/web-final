@@ -35,3 +35,19 @@
   border-color: #454551;
   color: var(--white);
 }
+
+.schedule-table .match-note {
+  min-width: 180px;
+  max-width: 300px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.schedule-message:empty {
+  display: none;
+}
+
+.save-match {
+  grid-column: 1 / -1;
+  justify-self: end;
+}

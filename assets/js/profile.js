@@ -135,7 +135,8 @@ document.addEventListener("DOMContentLoaded", function () {
     scheduleList.replaceChildren();
 
     const favorites = readStorage(storageKeys.favorites, []);
-    const schedule = readStorage(storageKeys.schedule, []);
+    const scheduleState = window.matchStorage.load();
+    const schedule = scheduleState.rows;
     if (Array.isArray(favorites)) {
       casinoGames.forEach(function (game) {
         if (favorites.includes(game.id)) addSavedItem(gamesList, game.name);
@@ -147,7 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
             typeof entry.time !== "string") return;
         const date = new Date(entry.time);
         if (Number.isNaN(date.getTime())) return;
-        addSavedItem(scheduleList, entry.match + " · " + entry.sport + " · " + date.toLocaleString());
+        addSavedItem(scheduleList, entry.match + " · " + entry.sport + " · " + date.toLocaleString() +
+          (entry.note ? " · Note: " + entry.note : ""));
       });
     }
 
@@ -155,11 +157,14 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("saved-schedule-empty").hidden = scheduleList.children.length > 0;
     document.getElementById("saved-count").textContent =
       gamesList.children.length + " games · " + scheduleList.children.length + " planned viewings";
+    document.getElementById("saved-message").textContent = scheduleState.error || scheduleState.warning || "";
+    return !scheduleState.error && !scheduleState.warning;
   }
 
   document.getElementById("refresh-saved").addEventListener("click", function () {
-    renderSavedItems();
-    document.getElementById("saved-message").textContent = "Saved items refreshed from this browser.";
+    if (renderSavedItems()) {
+      document.getElementById("saved-message").textContent = "Saved items refreshed from this browser.";
+    }
   });
 
   window.addEventListener("storage", function (event) {
